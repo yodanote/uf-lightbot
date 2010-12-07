@@ -14,3 +14,7 @@ lip_test: LipFeatureDetect.cpp HaarCascadeObjectDetector.cpp
 
 lip_contour: LipContour.cpp HaarCascadeObjectDetector.cpp
 	$(CC) LipContour.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -olip_contour
+
+eye_detect: EyeDetect.cpp HaarCascadeObjectDetector.cpp
+	$(CC) EyeDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -oeye_test
+
