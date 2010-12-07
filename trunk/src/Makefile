@@ -6,4 +6,5 @@ OPENCV_LIBS=$(shell pkg-config --libs opencv)
 all: 
 	$(CC) HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS)
 
-
+cam_test: CamFaceDetect.cpp
+	$(CC) CamFaceDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -ocam_test
