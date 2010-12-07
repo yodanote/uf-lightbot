@@ -54,11 +54,15 @@ HaarCascadeObjectDetector::~HaarCascadeObjectDetector()
 }
 
 int 
-HaarCascadeObjectDetector::detect(Mat& image, vector<Rect>& objects, Rect ROI)
+HaarCascadeObjectDetector::detect(Mat image, vector<Rect>& objects, Rect ROI)
 {
   vector<Rect> rects;
   Mat scaledImage;
 
+  if(ROI != Rect()) {
+    image = image(ROI);
+  }
+ 
   if(this->search_scale != 1.0) {
     /*Generate a scaled image version for searching*/
     scaledImage = Mat(cvRound(image.rows/this->search_scale), cvRound(image.cols/this->search_scale), CV_8UC1 );
@@ -82,7 +86,13 @@ HaarCascadeObjectDetector::detect(Mat& image, vector<Rect>& objects, Rect ROI)
   for(it = rects.begin(); it != rects.end();  it++) {
     //Determine original object rectangle 
     Rect object_ROI(cvRound(it->x*this->search_scale), cvRound(it->y*this->search_scale), cvRound(it->width*this->search_scale), cvRound(it->height*this->search_scale));
-    objects.push_back(object_ROI);
+    
+    if(ROI == Rect()) {
+      objects.push_back(object_ROI);
+    }
+    else {
+      objects.push_back(Rect(ROI.x + object_ROI.x, ROI.y + object_ROI.y, object_ROI.width, object_ROI.height));
+    }
   }
 
   return rects.size();

@@ -8,3 +8,7 @@ all:
 
 cam_test: CamFaceDetect.cpp
 	$(CC) CamFaceDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -ocam_test
+
+lip_test: LipFeatureDetect.cpp HaarCascadeObjectDetector.cpp
+	$(CC) LipFeatureDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -olip_test
+

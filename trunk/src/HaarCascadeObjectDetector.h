@@ -52,7 +52,7 @@ class HaarCascadeObjectDetector : public ObjectDetector
 
   virtual ~HaarCascadeObjectDetector();
 
-  int detect(cv::Mat& image, std::vector<cv::Rect>& objects, cv::Rect ROI = cv::Rect());
+  int detect(cv::Mat image, std::vector<cv::Rect>& objects, cv::Rect ROI = cv::Rect());
 
   void setImageScale(double scale);
   void setScaleFactor(double factor);
