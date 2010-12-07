@@ -111,7 +111,8 @@ main(int argc, char *argv[])
           imshow("lips", edge_detected);
 
           Canny(edge_detected, edge_detected, 50, 200, 3);
-          dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),1); /*Fill in gaps*/
+          dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),2); /*Fill in gaps*/
+          erode(edge_detected, edge_detected, Mat(), Point(-1,-1),1); /*Fill in gaps*/
           threshold(edge_detected, edge_detected, 200, 255, THRESH_BINARY); /*Create edge blobs*/
           
           imshow("stage3", edge_detected);
