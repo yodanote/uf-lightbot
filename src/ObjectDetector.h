@@ -26,7 +26,7 @@
 class ObjectDetector
 {
  public:
-  virtual int detect(cv::Mat& image, std::vector<cv::Rect>& objects, cv::Rect ROI = cv::Rect()) = 0;
+  virtual int detect(cv::Mat image, std::vector<cv::Rect>& objects, cv::Rect ROI = cv::Rect()) = 0;
 
 };
 
