@@ -57,7 +57,14 @@ main(int argc, char *argv[])
 
       cvtColor(frameCopy, gray, CV_BGR2GRAY);
     if(kmod%2 == 0) {
+
+      cvNamedWindow("gray", 1);
+      cvNamedWindow("stage1",1);
+      cvNamedWindow("stage3",1);
+      cvNamedWindow("stage2",1);
       cvNamedWindow("result", 1);
+
+
         faces.clear();
       t = (double)cvGetTickCount();
       faceDetector->detect(gray, faces);
@@ -85,21 +92,32 @@ main(int argc, char *argv[])
          
           Mat edge_detected = gray(*lips_it);
           equalizeHist(edge_detected, edge_detected);
+
           Mat pyr;
+          /*Remove some noise by down/upsampling*/
           pyrDown(edge_detected, pyr, Size(edge_detected.cols/2, edge_detected.rows/2));
           pyrUp(pyr, edge_detected, edge_detected.size());
-          
-          GaussianBlur(edge_detected, edge_detected, Size(5,5), 2.2, 2.2);
-          Canny(edge_detected, edge_detected, 100, 200, 3);
+          imshow("gray", edge_detected);
 
-          dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),1);
-          threshold(edge_detected, edge_detected, 100, 255, THRESH_BINARY);
-          erode(edge_detected, edge_detected, Mat(), Point(-1,-1),1);
-          threshold(edge_detected, edge_detected, 100, 255, THRESH_BINARY);
+          /*Remove some additional edge noise*/
+          GaussianBlur(edge_detected, edge_detected, Size(9,9), 2.2, 2.2); 
+          equalizeHist(edge_detected, edge_detected); /*Equalize color histogram*/
+          imshow("stage1", edge_detected);
+
+          imshow("stage2", edge_detected);
+
+          threshold(edge_detected, edge_detected, 125, 255, THRESH_BINARY); /*Create color blobs*/
+          dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),1); /*Fill in gaps*/
           imshow("lips", edge_detected);
 
+          Canny(edge_detected, edge_detected, 50, 200, 3);
+          dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),1); /*Fill in gaps*/
+          threshold(edge_detected, edge_detected, 200, 255, THRESH_BINARY); /*Create edge blobs*/
+          
+          imshow("stage3", edge_detected);
+
           Mat tmp = edge_detected;
-          findContours(tmp, contours, hierarchy, CV_RETR_EXTERNAL , CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0)); 
+          findContours(tmp, contours, hierarchy, CV_RETR_LIST , CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0)); 
           drawContours(frameCopy, contours, -1, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(lips_it->x, lips_it->y));
 
           circle(frameCopy, Point(cvRound(lips_it->x), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
@@ -107,7 +125,6 @@ main(int argc, char *argv[])
           
           cout<<"dist: "<<lips_it->width<<" estimated emotion feature: "<< ((lips_it->width >= 75)? "smiling":"not smiling")<<endl;
           cout<<"height: "<<lips_it->height<<endl;
-         threshold(edge_detected, edge_detected, 100, 255, THRESH_BINARY);
         }
        
       }  
