@@ -43,6 +43,8 @@ MouthFeatureDetector::detect(cv::Mat image, Rect face, MouthFeatures &features)
   int face_w = face.width;
   int face_h = face.height;
 
+  image = image.clone();
+
   /*Get the region of interest for the mouth*/
   Rect mouthROI(face_x, face_y + cvRound(face_h/2.0), face_w, cvRound(face_h/2.0)); 
   

@@ -20,6 +20,8 @@
 using namespace std;
 using namespace cv;
 
+void process_features(Mat &frame, Face face);
+
 int
 main(int argc, char *argv[])
 {
@@ -35,7 +37,8 @@ main(int argc, char *argv[])
   unsigned int kmod = 0;
 
   FaceDetector faceDetector("haarcascade_frontalface_alt.xml", 
-                            "haarcascade_mcs_mouth.xml");
+                            "haarcascade_mcs_mouth.xml",
+                            "haarcascade_mcs_nose.xml");
 
   capture = cvCaptureFromCAM(0);
   cvNamedWindow("result", 1);
@@ -62,6 +65,10 @@ main(int argc, char *argv[])
       faces.clear(); /*Empty face list*/
       faceDetector.detect(frameCopy, faces);
     }
+    vector<Face>::const_iterator it;
+    for(it = faces.begin(); it != faces.end(); it++) {
+      process_features(frameCopy, *it);
+    }
     imshow("result", frameCopy);
    }
   }
@@ -72,3 +79,18 @@ _cleanup_:
 
   return 0;
 }
+
+void 
+process_features(Mat &frame, Face face)
+{
+  cout<<"processing"<<endl;
+  rectangle(frame, Point(face.face_box.x, face.face_box.y), Point(face.face_box.x+ face.face_box.width, face.face_box.y+face.face_box.height), CV_RGB(0, 0 , 255 ));   
+         
+  circle(frame, face.features.mouth.lip_left_edge, 3, CV_RGB(255, 0 , 0 ), -1);
+  circle(frame, face.features.mouth.lip_right_edge, 3, CV_RGB(255, 0 , 0 ), -1);
+  circle(frame, face.features.mouth.lip_top_center, 3, CV_RGB(255, 0 , 0 ), -1);
+  circle(frame, face.features.mouth.lip_bottom_center, 3, CV_RGB(255, 0 , 0 ), -1);
+
+  circle(frame, face.features.nose.center, 3, CV_RGB(0, 255 , 0 ), -1);
+}
+
