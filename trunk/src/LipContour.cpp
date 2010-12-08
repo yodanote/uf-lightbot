@@ -137,6 +137,8 @@ main(int argc, char *argv[])
           Point top;
           Point bottom;
             drawContours(frameCopy, contours, mouth_contour, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(lips_it->x, lips_it->y));
+
+          /*Find points of interest on the CONTOUR*/
           for(int x=0; x<contours.at(mouth_contour).size(); x++) {
             Point p = contours.at(mouth_contour).at(x);
             Point p2 = contours.at(mouth_contour).at(contours.at(mouth_contour).size()-x-1);
@@ -161,9 +163,6 @@ main(int argc, char *argv[])
             }
           }
 
-
-
-          line(frameCopy, Point(lips_it->x, lips_it->y + lips_it->height/2),  Point(lips_it->x + lips_it->width, lips_it->y + lips_it->height/2), CV_RGB(255, 0 , 0 ));
           circle(frameCopy, Point(left.x + lips_it->x, left.y + lips_it->y), 3, CV_RGB(255, 0 , 0 ), -1);
           circle(frameCopy, Point(right.x + lips_it->x, right.y + lips_it->y), 3, CV_RGB(255, 0 , 0 ), -1);
           circle(frameCopy, Point(top.x + lips_it->x, top.y + lips_it->y), 3, CV_RGB(255, 0 , 0 ), -1);
