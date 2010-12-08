@@ -25,14 +25,15 @@
 class FaceDetector
 {
  public:
-  FaceDetector(std::string face_cascade_file, std::string mouth_cascade_file);
-  FaceDetector(cv::CascadeClassifier face_cascade, cv::CascadeClassifier mouth_cascade);
+  FaceDetector(std::string face_cascade_file, std::string mouth_cascade_file, std::string nose_cascade_file);
+  FaceDetector(cv::CascadeClassifier face_cascade, cv::CascadeClassifier mouth_cascade, cv::CascadeClassifier nose_cascade);
   ~FaceDetector();
 
   int detect(cv::Mat image, std::vector<Face>& faces);
  private:
   ObjectDetector *detector;
   MouthFeatureDetector *mouthFeatureDetector;
+  NoseFeatureDetector  *noseFeatureDetector;
 };
 
 #endif /*FACEDETECTOR_H*/

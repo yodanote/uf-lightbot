@@ -28,9 +28,9 @@ class NoseFeatureDetector
   NoseFeatureDetector(cv::CascadeClassifier cascade);
   ~NoseFeatureDetector();
 
-  int detect(cv::Mat image, std::vector<Face>& faces);
+  int detect(cv::Mat image, cv::Rect face, NoseFeatures &nose);
  private:
-  ObjectDetector *detector;
+  ObjectDetector *detector;  
 };
 
 #endif /*NOSEFEATUREDETECTOR_H*/

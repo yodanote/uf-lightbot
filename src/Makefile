@@ -3,8 +3,8 @@ CC=g++
 OPENCV_FLAGS=$(shell pkg-config --cflags opencv)
 OPENCV_LIBS=$(shell pkg-config --libs opencv)
 
-SOURCE=main.cpp FaceDetector.cpp MouthFeatureDetector.cpp HaarCascadeObjectDetector.cpp
-HEADERS=FaceDetector.h MouthFeatureDetector.h HaarCascadeObjectDetector.h
+SOURCE=main.cpp FaceDetector.cpp MouthFeatureDetector.cpp NoseFeatureDetector.cpp HaarCascadeObjectDetector.cpp
+HEADERS=FaceDetector.h MouthFeatureDetector.h NoseFeatureDetector.h HaarCascadeObjectDetector.h
 
 all: $(SOURCE) $(HEADERS)
 	$(CC) $(SOURCE) $(OPENCV_FLAGS) $(OPENCV_LIBS) -olightbot
