@@ -122,6 +122,7 @@ main(int argc, char *argv[])
           cout<<"found "<<contours.size()<<" contours"<<endl;
           for(int x=0; x<contours.size(); x++) {
             drawContours(frameCopy, contours, x, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(lips_it->x, lips_it->y));
+            cout<<"contour size: "<<contours.at(x).size()<<endl;
             for(int y=0; y<contours.at(x).size(); y++) {
               circle(frameCopy, contours.at(x).at(y), 3, CV_RGB(255, 0 , 0 ), -1);
             }
