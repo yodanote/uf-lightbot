@@ -120,8 +120,12 @@ main(int argc, char *argv[])
           Mat tmp = edge_detected;
           findContours(tmp, contours, hierarchy, CV_RETR_EXTERNAL , CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0)); 
           cout<<"found "<<contours.size()<<" contours"<<endl;
-          for(int x=0; x<contours.size(); x++) 
+          for(int x=0; x<contours.size(); x++) {
             drawContours(frameCopy, contours, x, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(lips_it->x, lips_it->y));
+            for(int y=0; y<contours.at(x).size(); y++) {
+              circle(frameCopy, contours.at(x).at(y), 3, CV_RGB(255, 0 , 0 ), -1);
+            }
+          }
 
           circle(frameCopy, Point(cvRound(lips_it->x), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
           circle(frameCopy, Point(cvRound(lips_it->x+lips_it->width), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
