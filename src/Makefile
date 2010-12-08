@@ -3,8 +3,11 @@ CC=g++
 OPENCV_FLAGS=$(shell pkg-config --cflags opencv)
 OPENCV_LIBS=$(shell pkg-config --libs opencv)
 
-all: 
-	$(CC) HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS)
+SOURCE=main.cpp FaceDetector.cpp MouthFeatureDetector.cpp HaarCascadeObjectDetector.cpp
+HEADERS=FaceDetector.h MouthFeatureDetector.h HaarCascadeObjectDetector.h
+
+all: $(SOURCE) $(HEADERS)
+	$(CC) $(SOURCE) $(OPENCV_FLAGS) $(OPENCV_LIBS) -olightbot
 
 cam_test: CamFaceDetect.cpp
 	$(CC) CamFaceDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -ocam_test
@@ -21,3 +24,5 @@ eye_detect: EyeDetect.cpp HaarCascadeObjectDetector.cpp
 nose_detect: NoseDetect.cpp HaarCascadeObjectDetector.cpp
 	$(CC) NoseDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -onose_test
 
+test:
+	$(CC) FaceDetector.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -otest
