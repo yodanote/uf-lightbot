@@ -1,0 +1,33 @@
+\documentclass[11pt, journal]{IEEEtran}
+
+\title{Real-Time Facial Emotion Recognition}
+\author{Robert~Kirchgessner,~\IEEEmembership{Graduate Student}
+Tomasz Bacewicz~\IEEEmembership{Graduate Student}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This paper explores a real-time system aimed at detecting facial emotions in a video stream.
+The process of emotion recognition can be broken up into several stages: segmentation of facial regions within an image, extraction of facial features and categorization of features
+into emotions~\cite{FacialExprRecogIntegratedApproach}. The first stage of processing identifies facial regions within a video frame. In recognizing the facial regions, three popular
+methods are explored: skin-color face localization~\cite{FuzzyEmoModel}, AdaBoost and Automatically Generated 
+Cascade Classifier (AM-CC)~\cite{RealTimeFaceDetection,ImprovedAdaboostFaceDetection}. The second stage of processing identifies features which can
+be used as classifiers in recognizing facial expressions. Multiple feature detection methods are explored: directional templates for evaluating 
+monochromatic intensity distributions, edge-like blob maps~\cite{FacialFeatHumanRobo} and multi-resolution analysis~\cite{RealTimeFeatureExtraction}.
+Finally, an artificial neural network is used in order to classify the identified features into Ekman's six basic emotions~\cite{FacialExprRecogIntegratedApproach}. The neural network is trained using images taken from available databases such as the CMU/VASC face database.
+\end{abstract}
+
+\section{Introduction}
+\section{Related Work}
+\section{Description}
+\section{Evaluation}
+\section{Related Work}
+\section{Summary and Conclusions}
+
+\newpage 
+\bibliography{bibliography}
+\bibliographystyle{IEEEtran}
+
+\end{document}
