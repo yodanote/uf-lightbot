@@ -13,6 +13,7 @@
  */
 
 #include <iostream>
+#include <cmath>
 
 #include "HaarCascadeObjectDetector.h"
 #include <opencv2/highgui/highgui.hpp>
@@ -118,18 +119,58 @@ main(int argc, char *argv[])
           imshow("stage3", edge_detected);
 
           Mat tmp = edge_detected;
-          findContours(tmp, contours, hierarchy, CV_RETR_EXTERNAL , CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0)); 
+          findContours(tmp, contours, hierarchy, CV_RETR_EXTERNAL , CV_CHAIN_APPROX_NONE, cvPoint(0,0)); 
           cout<<"found "<<contours.size()<<" contours"<<endl;
+         
+          int mouth_contour = 0;
+          //assume the contour with the most points is the mouth -- this may be flawed :D
           for(int x=0; x<contours.size(); x++) {
-            drawContours(frameCopy, contours, x, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(lips_it->x, lips_it->y));
-            cout<<"contour size: "<<contours.at(x).size()<<endl;
-            for(int y=0; y<contours.at(x).size(); y++) {
-              circle(frameCopy, contours.at(x).at(y), 3, CV_RGB(255, 0 , 0 ), -1);
+
+            if(contours.at(x).size() > mouth_contour) {
+              mouth_contour = x;
+
             }
           }
 
-          circle(frameCopy, Point(cvRound(lips_it->x), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
-          circle(frameCopy, Point(cvRound(lips_it->x+lips_it->width), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
+          Point left;
+          Point right;
+          Point top;
+          Point bottom;
+            drawContours(frameCopy, contours, mouth_contour, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(lips_it->x, lips_it->y));
+          for(int x=0; x<contours.at(mouth_contour).size(); x++) {
+            Point p = contours.at(mouth_contour).at(x);
+            Point p2 = contours.at(mouth_contour).at(contours.at(mouth_contour).size()-x-1);
+            if(x == 0) {
+              left  =  p;
+              right =  p;
+              top   =  p;
+            }
+            else {
+              if(left.x > p.x) {
+                left = p;
+              }
+             if(right.x < p.x || (right.x == p.x && right.y > p.y)) {
+                right = p;
+              }
+             if( (abs(top.x - lips_it->width/2) > abs(p2.x - lips_it->width/2 ))) {
+               top = p2;
+             }
+             if( (abs(bottom.x - lips_it->width/2) > abs(p.x - lips_it->width/2 ))) {
+               bottom = p;
+             }
+            }
+          }
+
+
+
+          line(frameCopy, Point(lips_it->x, lips_it->y + lips_it->height/2),  Point(lips_it->x + lips_it->width, lips_it->y + lips_it->height/2), CV_RGB(255, 0 , 0 ));
+          circle(frameCopy, Point(left.x + lips_it->x, left.y + lips_it->y), 3, CV_RGB(255, 0 , 0 ), -1);
+          circle(frameCopy, Point(right.x + lips_it->x, right.y + lips_it->y), 3, CV_RGB(255, 0 , 0 ), -1);
+          circle(frameCopy, Point(top.x + lips_it->x, top.y + lips_it->y), 3, CV_RGB(255, 0 , 0 ), -1);
+          circle(frameCopy, Point(bottom.x + lips_it->x, bottom.y + lips_it->y), 3, CV_RGB(255, 0 , 0 ), -1);       
+         
+         //right  circle(frameCopy, Point(cvRound(lips_it->x), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
+         // circle(frameCopy, Point(cvRound(lips_it->x+lips_it->width), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
           
           cout<<"dist: "<<lips_it->width<<" estimated emotion feature: "<< ((lips_it->width >= 75)? "smiling":"not smiling")<<endl;
           cout<<"height: "<<lips_it->height<<endl;
