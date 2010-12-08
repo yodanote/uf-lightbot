@@ -117,14 +117,11 @@ main(int argc, char *argv[])
           
           imshow("stage3", edge_detected);
 
-          Mat::const_iterator<
-
           Mat tmp = edge_detected;
-          findContours(tmp, contours, hierarchy, CV_RETR_LIST , CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0)); 
-          drawContours(frameCopy, contours, -1, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(lips_it->x, lips_it->y));
-
-
-
+          findContours(tmp, contours, hierarchy, CV_RETR_EXTERNAL , CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0)); 
+          cout<<"found "<<contours.size()<<" contours"<<endl;
+          for(int x=0; x<contours.size(); x++) 
+            drawContours(frameCopy, contours, x, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(lips_it->x, lips_it->y));
 
           circle(frameCopy, Point(cvRound(lips_it->x), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
           circle(frameCopy, Point(cvRound(lips_it->x+lips_it->width), cvRound(lips_it->y+lips_it->height/2.0)), 3, CV_RGB(255, 0 , 0 ), -1);
