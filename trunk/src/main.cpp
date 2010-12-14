@@ -38,7 +38,9 @@ main(int argc, char *argv[])
 
   FaceDetector faceDetector("haarcascade_frontalface_alt.xml", 
                             "haarcascade_mcs_mouth.xml",
-                            "haarcascade_mcs_nose.xml");
+                            "haarcascade_mcs_nose.xml",
+                            "haarcascade_mcs_lefteye.xml",
+                            "haarcascade_mcs_righteye.xml");
 
   capture = cvCaptureFromCAM(0);
   cvNamedWindow("result", 1);
@@ -90,6 +92,13 @@ process_features(Mat &frame, Face face)
   circle(frame, face.features.mouth.lip_right_edge, 3, CV_RGB(255, 0 , 0 ), -1);
   circle(frame, face.features.mouth.lip_top_center, 3, CV_RGB(255, 0 , 0 ), -1);
   circle(frame, face.features.mouth.lip_bottom_center, 3, CV_RGB(255, 0 , 0 ), -1);
+
+  circle(frame, face.features.eyes.left_eye_top, 3, CV_RGB(255, 0 , 0 ), -1);
+  circle(frame, face.features.eyes.left_eye_bottom, 3, CV_RGB(255, 0 , 0 ), -1);
+
+  circle(frame, face.features.eyes.right_eye_top, 3, CV_RGB(255, 0 , 0 ), -1);
+  circle(frame, face.features.eyes.right_eye_bottom, 3, CV_RGB(255, 0 , 0 ), -1);
+  
 
   circle(frame, face.features.nose.center, 3, CV_RGB(0, 255 , 0 ), -1);
 }

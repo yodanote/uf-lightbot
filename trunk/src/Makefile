@@ -3,11 +3,11 @@ CC=g++
 OPENCV_FLAGS=$(shell pkg-config --cflags opencv)
 OPENCV_LIBS=$(shell pkg-config --libs opencv)
 
-SOURCE=main.cpp FaceDetector.cpp MouthFeatureDetector.cpp NoseFeatureDetector.cpp HaarCascadeObjectDetector.cpp
-HEADERS=FaceDetector.h MouthFeatureDetector.h NoseFeatureDetector.h HaarCascadeObjectDetector.h
+SOURCE=main.cpp FaceDetector.cpp MouthFeatureDetector.cpp NoseFeatureDetector.cpp HaarCascadeObjectDetector.cpp EyeFeatureDetector.cpp
+HEADERS=FaceDetector.h MouthFeatureDetector.h NoseFeatureDetector.h HaarCascadeObjectDetector.h EyeFeatureDetector.h
 
 all: $(SOURCE) $(HEADERS)
-	$(CC) $(SOURCE) $(OPENCV_FLAGS) $(OPENCV_LIBS) -olightbot
+	$(CC) -g $(SOURCE) $(OPENCV_FLAGS) $(OPENCV_LIBS) -olightbot
 
 features: ManualFeatures.cpp
 	$(CC) ManualFeatures.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -ofeatures
@@ -23,6 +23,11 @@ lip_contour: LipContour.cpp HaarCascadeObjectDetector.cpp
 
 eye_detect: EyeDetect.cpp HaarCascadeObjectDetector.cpp
 	$(CC) EyeDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -oeye_test
+
+brow_detect: BrowDetect.cpp HaarCascadeObjectDetector.cpp
+	$(CC) EyeDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -oeye_test
+
+
 
 nose_detect: NoseDetect.cpp HaarCascadeObjectDetector.cpp
 	$(CC) NoseDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -onose_test
