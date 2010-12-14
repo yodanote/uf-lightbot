@@ -1,9 +1,9 @@
 CC=g++
 
 OPENCV_FLAGS=$(shell pkg-config --cflags opencv)
-OPENCV_LIBS=$(shell pkg-config --libs opencv)
+OPENCV_LIBS=$(shell pkg-config --libs opencv) -lfann
 
-SOURCE=main.cpp FaceDetector.cpp MouthFeatureDetector.cpp NoseFeatureDetector.cpp HaarCascadeObjectDetector.cpp EyeFeatureDetector.cpp
+SOURCE=main.cpp FaceDetector.cpp MouthFeatureDetector.cpp NoseFeatureDetector.cpp HaarCascadeObjectDetector.cpp EyeFeatureDetector.cpp BrowFeatureDetector.cpp
 HEADERS=FaceDetector.h MouthFeatureDetector.h NoseFeatureDetector.h HaarCascadeObjectDetector.h EyeFeatureDetector.h
 
 all: $(SOURCE) $(HEADERS)

@@ -18,6 +18,22 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 typedef struct {
+  double mouth_w;
+  double mouth_h;
+  
+  double d_left_eye;
+  double d_right_eye;
+  
+  double d_left_brow_left;
+  double d_left_brow_middle;
+  double d_left_brow_right;
+
+  double d_right_brow_left;
+  double d_right_brow_middle;
+  double d_right_brow_right;
+} DistanceFeatures;
+
+typedef struct {
   cv::Point center;  /*Point representing the center of the nose*/
 } NoseFeatures;
 
