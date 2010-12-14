@@ -21,6 +21,8 @@
 #include "MouthFeatureDetector.h"
 #include "NoseFeatureDetector.h"
 #include "EyeFeatureDetector.h"
+#include "BrowFeatureDetector.h"
+#include "fann.h"
 
 class FaceDetector
 {
@@ -29,12 +31,15 @@ class FaceDetector
   FaceDetector(cv::CascadeClassifier face_cascade, cv::CascadeClassifier mouth_cascade, cv::CascadeClassifier nose_cascade, cv::CascadeClassifier left_cascade, cv::CascadeClassifier right_cascade);
   ~FaceDetector();
 
+  void detect_emotion(DistanceFeatures emotion, DistanceFeatures neutral, double *output);
   int detect(cv::Mat image, std::vector<Face>& faces);
  private:
   ObjectDetector *detector;
   MouthFeatureDetector *mouthFeatureDetector;
   NoseFeatureDetector  *noseFeatureDetector;
   EyeFeatureDetector   *eyeFeatureDetector;
+  BrowFeatureDetector  *browFeatureDetector;
+  struct fann *ann;
 };
 
 #endif /*FACEDETECTOR_H*/
