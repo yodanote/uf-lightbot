@@ -34,8 +34,10 @@ main(int argc, char *argv[])
   unsigned int kmod = 0;
 
   ObjectDetector *faceDetector = new HaarCascadeObjectDetector("haarcascade_frontalface_alt.xml");
-  ObjectDetector *eyeDetector = new HaarCascadeObjectDetector("haarcascade_mcs_lefteye.xml");
-  ((HaarCascadeObjectDetector*)eyeDetector)->setImageScale(0.7);
+  ObjectDetector *righteyeDetector = new HaarCascadeObjectDetector("haarcascade_mcs_righteye.xml");
+  ObjectDetector *lefteyeDetector = new HaarCascadeObjectDetector("haarcascade_mcs_lefteye.xml");
+  ((HaarCascadeObjectDetector*)righteyeDetector)->setImageScale(1.5);
+  ((HaarCascadeObjectDetector*)lefteyeDetector) ->setImageScale(1.5);
 
   capture = cvCaptureFromCAM(0);
 
@@ -62,45 +64,96 @@ main(int argc, char *argv[])
       t = (double)cvGetTickCount();
       faceDetector->detect(gray, faces);
       t = (double)cvGetTickCount() - t;
-      cout<<"execution time = "<<(t/((double)cvGetTickFrequency()*1000.0))<<" ms"<<endl;
+     // cout<<"execution time = "<<(t/((double)cvGetTickFrequency()*1000.0))<<" ms"<<endl;
     }
 
       vector<Rect>::const_iterator it;
+      vector<Rect>::const_iterator reye_it;
+      vector<Rect>::const_iterator leye_it;
       for(it = faces.begin(); it != faces.end(); it++) {
         rectangle(frameCopy, Point(it->x, it->y), Point(it->x+it->width, it->y+it->height), CV_RGB(255, 0 , 0));
      
-        Rect eyeROI(it->x, it->y,cvRound(it->width/2.0), cvRound(it->height/2.0)); 
-        rectangle(frameCopy, Point(eyeROI.x, eyeROI.y), Point(eyeROI.x + eyeROI.width, eyeROI.y + eyeROI.height), CV_RGB(0, 255, 0));
-        vector<Rect> eyes;
-        eyeDetector->detect(gray, eyes, eyeROI);
-
-        vector<Rect>::const_iterator eyes_it;
+        Rect reyeROI((it->x)+(it->width/2.0), it->y,cvRound(it->width/2.0), cvRound(it->height/2.0)); 
+	Rect leyeROI(it->x, it->y,cvRound(it->width/2.0), cvRound(it->height/2.0));
+        rectangle(frameCopy, Point(reyeROI.x, reyeROI.y), Point(reyeROI.x + reyeROI.width, reyeROI.y + reyeROI.height), CV_RGB(0, 255, 0));
+	rectangle(frameCopy, Point(leyeROI.x, leyeROI.y), Point(leyeROI.x + leyeROI.width, leyeROI.y + leyeROI.height), CV_RGB(0, 255, 0));
+       	vector<Rect> reye;
+	vector<Rect> leye;
+        righteyeDetector->detect(gray, reye, reyeROI);
+	lefteyeDetector->detect(gray, leye, leyeROI);
+	      
+	vector<Rect>::const_iterator reye_it;
+        vector<Rect>::const_iterator leye_it;
         vector<vector<Point> > contours;
         vector<Vec4i> hierarchy;
 
-        //if(lips.empty()) { cout<<"empty"; } else { cout<<"lips found"<<endl; }
-        cvNamedWindow("eyes", 1);
-        for(eyes_it = eyes.begin(); eyes_it != eyes.end(); eyes_it++) {
-          rectangle(frameCopy, Point(eyes_it->x, eyes_it->y), Point(eyes_it->x+eyes_it->width, eyes_it->y+eyes_it->height), CV_RGB(0, 0 , 255 ));
-          Mat edge_detected = gray(*eyes_it);
-equalizeHist( edge_detected,edge_detected );
-         //GaussianBlur( edge_detected, edge_detected, Size(9, 9), 2, 2 );
-         vector<Vec3f> circles;
-
-         HoughCircles(edge_detected, circles, CV_HOUGH_GRADIENT, 1, edge_detected.rows/4, 50, 100 );
-    for( size_t i = 0; i < circles.size(); i++ )
-    {
-         cout<<"found a circle"<<endl;
-         Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-         int radius = cvRound(circles[i][2]);
-         // draw the circle center
-         circle( edge_detected, center, 3, Scalar(0,255,0), -1, 8, 0 );
-         // draw the circle outline
-         circle( edge_detected, center, radius, Scalar(0,0,255), 3, 8, 0 );
-    }
-
-          imshow("eyes", edge_detected);
-        }
+	cvNamedWindow("eyes", 1);
+        
+	for(reye_it = reye.begin(); reye_it != reye.end(); reye_it++) {
+	rectangle(frameCopy, Point(reye_it->x, reye_it->y), Point(reye_it->x+reye_it->width, reye_it->y+reye_it->height), CV_RGB(0, 0 , 255 ));
+       
+	Mat edge_detected = gray(*reye_it);
+	
+	Mat pyr;
+		
+	pyrDown(edge_detected, pyr, Size(edge_detected.cols/2, edge_detected.rows/2));
+	pyrUp(pyr, edge_detected, edge_detected.size());
+	
+	GaussianBlur(edge_detected, edge_detected, Size(9,9), 2.2, 2.2);
+	equalizeHist(edge_detected, edge_detected);
+	
+	
+        threshold(edge_detected, edge_detected, 125, 255, THRESH_BINARY);
+	dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),1);
+	
+	Canny(edge_detected, edge_detected, 50, 200, 3);
+	//Sobel(edge_detected, edge_detected,8, 0, 1);
+	dilate(edge_detected, edge_detected, Mat(), Point(-1,-1), 2);
+	erode(edge_detected, edge_detected, Mat(), Point(-1,-1), 1);
+	
+	
+	threshold(edge_detected, edge_detected, 200, 255, THRESH_BINARY);
+		
+	findContours(edge_detected, contours, hierarchy, CV_RETR_LIST , CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0)); 
+	imshow("tmp", edge_detected);
+	drawContours(frameCopy, contours, -1, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(reye_it->x, reye_it->y));
+	
+	 dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),1); 
+         imshow("eyes", edge_detected);
+    
+	}
+	for(leye_it = leye.begin(); leye_it != leye.end(); leye_it++) {
+	rectangle(frameCopy, Point(leye_it->x, leye_it->y), Point(leye_it->x+leye_it->width, leye_it->y+leye_it->height), CV_RGB(0, 0 , 255 ));
+       
+	Mat edge_detected = gray(*leye_it);
+	
+	Mat pyr;
+		
+	pyrDown(edge_detected, pyr, Size(edge_detected.cols/2, edge_detected.rows/2));
+	pyrUp(pyr, edge_detected, edge_detected.size());
+	
+	GaussianBlur(edge_detected, edge_detected, Size(9,9), 2.2, 2.2);
+	equalizeHist(edge_detected, edge_detected);
+	
+	
+        threshold(edge_detected, edge_detected, 125, 255, THRESH_BINARY);
+	dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),1);
+	
+	Canny(edge_detected, edge_detected, 50, 200, 3);
+	//Sobel(edge_detected, edge_detected, 8, 0, 1);
+	dilate(edge_detected, edge_detected, Mat(), Point(-1,-1), 2);
+	erode(edge_detected, edge_detected, Mat(), Point(-1,-1), 1);
+		
+	threshold(edge_detected, edge_detected, 200, 255, THRESH_BINARY);
+		
+	findContours(edge_detected, contours, hierarchy, CV_RETR_LIST , CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0)); 
+	imshow("tmp", edge_detected);
+	drawContours(frameCopy, contours, -1, CV_RGB(0, 255, 255 ), 1, CV_AA, hierarchy, 0, Point(leye_it->x, leye_it->y));
+	
+	 dilate(edge_detected, edge_detected, Mat(), Point(-1,-1),1); 
+         imshow("eyes", edge_detected);
+    
+	}
        
       }  
       imshow("result", frameCopy);
@@ -114,7 +167,8 @@ equalizeHist( edge_detected,edge_detected );
 _cleanup_:
   cvReleaseCapture( &capture );
   delete faceDetector;
-  delete eyeDetector;
+  delete righteyeDetector;
+  delete lefteyeDetector;
   return 0;
 }
 

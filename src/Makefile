@@ -9,6 +9,9 @@ HEADERS=FaceDetector.h MouthFeatureDetector.h NoseFeatureDetector.h HaarCascadeO
 all: $(SOURCE) $(HEADERS)
 	$(CC) $(SOURCE) $(OPENCV_FLAGS) $(OPENCV_LIBS) -olightbot
 
+features: ManualFeatures.cpp
+	$(CC) ManualFeatures.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -ofeatures
+
 cam_test: CamFaceDetect.cpp
 	$(CC) CamFaceDetect.cpp HaarCascadeObjectDetector.cpp $(OPENCV_FLAGS) $(OPENCV_LIBS) -ocam_test
 
