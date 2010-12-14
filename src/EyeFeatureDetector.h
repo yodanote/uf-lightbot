@@ -23,13 +23,14 @@
 class EyeFeatureDetector
 {
  public:
-  EyeFeatureDetector(std::string cascade_file);
-  EyeFeatureDetector(cv::CascadeClassifier cascade);
+  EyeFeatureDetector(std::string left_eye_cascade_file, std::string right_eye_cascade_file);
+  EyeFeatureDetector(cv::CascadeClassifier left_cascade, cv::CascadeClassifier right_cascade);
   ~EyeFeatureDetector();
 
-  int detect(cv::Mat image, std::vector<Face>& faces);
+  void detect(cv::Mat image, cv::Rect face, EyeFeatures &features);
  private:
-  ObjectDetector *detector;
+  ObjectDetector *lefteyeDetector;
+  ObjectDetector *righteyeDetector;
 };
 
 #endif /*EYEFEATUREDETECTOR_H*/

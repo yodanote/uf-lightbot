@@ -25,8 +25,8 @@
 class FaceDetector
 {
  public:
-  FaceDetector(std::string face_cascade_file, std::string mouth_cascade_file, std::string nose_cascade_file);
-  FaceDetector(cv::CascadeClassifier face_cascade, cv::CascadeClassifier mouth_cascade, cv::CascadeClassifier nose_cascade);
+  FaceDetector(std::string face_cascade_file, std::string mouth_cascade_file, std::string nose_cascade_file, std::string left_eye_cascade_file, std::string right_eye_cascade_file);
+  FaceDetector(cv::CascadeClassifier face_cascade, cv::CascadeClassifier mouth_cascade, cv::CascadeClassifier nose_cascade, cv::CascadeClassifier left_cascade, cv::CascadeClassifier right_cascade);
   ~FaceDetector();
 
   int detect(cv::Mat image, std::vector<Face>& faces);
@@ -34,6 +34,7 @@ class FaceDetector
   ObjectDetector *detector;
   MouthFeatureDetector *mouthFeatureDetector;
   NoseFeatureDetector  *noseFeatureDetector;
+  EyeFeatureDetector   *eyeFeatureDetector;
 };
 
 #endif /*FACEDETECTOR_H*/

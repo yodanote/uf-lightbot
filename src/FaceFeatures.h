@@ -29,16 +29,28 @@ typedef struct {
 } MouthFeatures;
 
 typedef struct {
-  cv::Point pupil_center;      /*Point representing the pupil center*/
-  cv::Point brow_left;         /*Point representing the eye-brow left point*/
-  cv::Point brow_right;        /*Point representing the eye-brow right point*/
-  cv::Point brow_center;       /*Point representing the eye-brow center point*/
+  cv::Point left_eye_top;         /*Point representing the top of the left eye*/
+  cv::Point left_eye_bottom;      /*Point representing the bottom of the left eye*/
+
+  cv::Point right_eye_top;         /*Point representing the top of the right eye*/
+  cv::Point right_eye_bottom;      /*Point representing the bottom of the right eye*/
 } EyeFeatures;
+
+typedef struct {
+  cv::Point left_brow_left;         /*Point representing the eye-brow left point*/
+  cv::Point left_brow_center;       /*Point representing the eye-brow center point*/
+  cv::Point left_brow_right;        /*Point representing the eye-brow right point*/
+
+  cv::Point right_brow_left;         /*Point representing the eye-brow left point*/
+  cv::Point right_brow_center;       /*Point representing the eye-brow center point*/
+  cv::Point right_brow_right;        /*Point representing the eye-brow right point*/
+} BrowFeatures;
 
 typedef struct {
   NoseFeatures  nose;
   MouthFeatures mouth;
-  EyeFeatures   eye;
+  EyeFeatures   eyes;
+  BrowFeatures  brows;
 } FaceFeatures;
 
 typedef struct {

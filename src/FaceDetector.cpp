@@ -18,18 +18,20 @@
 using namespace std;
 using namespace cv;
 
-FaceDetector::FaceDetector(string face_cascade_file, string mouth_cascade_file, string nose_cascade_file)
+FaceDetector::FaceDetector(string face_cascade_file, string mouth_cascade_file, string nose_cascade_file, string left_eye_cascade_file, string right_eye_cascade_file)
 {
   this->detector             = new HaarCascadeObjectDetector(face_cascade_file);
   this->mouthFeatureDetector = new MouthFeatureDetector(mouth_cascade_file);
   this->noseFeatureDetector  = new NoseFeatureDetector(nose_cascade_file);
+  this->eyeFeatureDetector   = new EyeFeatureDetector(left_eye_cascade_file, right_eye_cascade_file);
 }
 
-FaceDetector::FaceDetector(cv::CascadeClassifier face_cascade, cv::CascadeClassifier mouth_cascade, cv::CascadeClassifier nose_cascade)
+FaceDetector::FaceDetector(cv::CascadeClassifier face_cascade, cv::CascadeClassifier mouth_cascade, cv::CascadeClassifier nose_cascade,  cv::CascadeClassifier left_cascade,  cv::CascadeClassifier right_cascade)
 {
   this->detector             = new HaarCascadeObjectDetector(face_cascade);
   this->mouthFeatureDetector = new MouthFeatureDetector(mouth_cascade);
   this->noseFeatureDetector  = new NoseFeatureDetector(nose_cascade);
+  this->eyeFeatureDetector   = new EyeFeatureDetector(left_cascade, right_cascade);
 }
 
 FaceDetector::~FaceDetector()
@@ -37,6 +39,7 @@ FaceDetector::~FaceDetector()
   delete this->detector;
   delete this->mouthFeatureDetector;
   delete this->noseFeatureDetector;
+  delete this->eyeFeatureDetector;
 }
 
 int 
@@ -55,6 +58,7 @@ FaceDetector::detect(Mat image, vector<Face>& faces)
     tmp.face_box = *it;
     this->mouthFeatureDetector->detect(gray, *it, tmp.features.mouth);  /*Detect features on mouth*/
     this->noseFeatureDetector->detect(gray, *it, tmp.features.nose);    /*Detect features on nose*/
+    this->eyeFeatureDetector->detect(gray, *it, tmp.features.eyes);     /*Detect eye features*/
     //cout<<tmp.features.mouth.lip_left_edge<<endl;
     faces.push_back(tmp);
   }
