@@ -1,0 +1,1 @@
+This project will explore different methods for recognition of facial expressions using OpenCV.
